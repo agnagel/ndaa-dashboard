@@ -1,13 +1,17 @@
 import streamlit as st
+from configparser import ConfigParser
 import json
 import requests
 from urllib.parse import urljoin
 
 API_URL = "https://api.congress.gov/"
 API_VERSION = "v3"
-API_KEY = "123"
-API_STRING = f"api_key=[{API_KEY}]"
 RESPONSE_FORMAT = "json" # can't get xml to work
+
+config = ConfigParser()
+config.read("../secrets.ini")
+API_KEY = config.get("cdg_api", "api_auth_key")
+API_STRING = f"api_key=[{API_KEY}]"
 
 CONGRESS = "119"
 BILL_TYPE = "s"
