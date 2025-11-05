@@ -71,7 +71,12 @@ class CDG:
     def get_bill_details(self, congress, bill_type, bill_num):
         endpoint = f"bill/{congress}/{bill_type}/{bill_num}"
         data, status_code = self.client.get(endpoint)
-        return data, status_code
+        return data['bill']
+
+    def get_amendment_details(self, congress, amendment_type, amendment_num):
+        endpoint = f"amendment/{congress}/{amendment_type}/{amendment_num}"
+        data, status_code = self.client.get(endpoint)
+        return data['amendment']
 
     def get_amendments(self, congress, bill_type, bill_num):
         """ Returns a URL to the HTML or XML of the bill text """
@@ -81,7 +86,7 @@ class CDG:
         data = []
         while offset < total_count:
             self.client.update_params(offset=offset)
-            data_page, _ = self._get_amendments(congress, bill_type, bill_num)
+            data_page = self._get_amendments(congress, bill_type, bill_num)
             data.extend(data_page['amendments'])
             total_count = data_page['pagination']['count']
             offset += limit
@@ -91,7 +96,7 @@ class CDG:
     def _get_amendments(self, congress, bill_type, bill_num):
         endpoint = f"bill/{congress}/{bill_type}/{bill_num}/amendments"
         data, status_code = self.client.get(endpoint)
-        return data, status_code
+        return data
 
     def get_amendment_text(self, congress, amendment_type, amendment_num):
         url = self._get_amendment_text_url(congress, amendment_type, amendment_num)
@@ -109,3 +114,8 @@ class CDG:
             if format['type'].upper() == 'HTML':
                 return format['url']
         return ''
+
+    def get_amendment_amendments(self, congress, amendment_type, amendment_num):
+        endpoint = f"amendment/{congress}/{amendment_type}/{amendment_num}/amendments"
+        data, status_code = self.client.get(endpoint)
+        return data

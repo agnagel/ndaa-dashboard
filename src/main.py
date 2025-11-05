@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
     # Check to see how many amendments exist for this bill
     bill_details = cdg.get_bill_details(CONGRESS, BILL_TYPE, BILL_NUM)
-    amendment_count = bill_details[0]['bill']['amendments']['count']
+    amendment_count = bill_details['amendments']['count']
 
     # Check if we have a cached list already
     old_amendment_count = 0
@@ -52,6 +52,8 @@ if __name__ == "__main__":
             amendment_num = amendment['number']
             for _ in range(retries):
                 try:
+                    details = cdg.get_amendment_details(CONGRESS, amendment_type, amendment_num)
+                    amendments[i].update(details)
                     text = cdg.get_amendment_text(CONGRESS, amendment_type, amendment_num)
                     amendments[i].update({'text': text})
                     break
