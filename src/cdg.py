@@ -1,4 +1,4 @@
-import bs4
+from bs4 import BeautifulSoup
 import requests
 from urllib.parse import urljoin
 
@@ -6,7 +6,7 @@ API_URL = "https://api.congress.gov/"
 API_VERSION = "v3"
 
 class CDG:
-    """ A sample client to interface with Congress Dot Gov """
+    """ A client to interface with Congress Dot Gov """
 
     def __init__(
         self,
@@ -62,8 +62,10 @@ class CDG:
         url = self._get_amendment_text_url(congress, amendment_type, amendment_num)
         print(f'Getting text from {url}...')
         if url:
-            response = requests.get(url, timeout=10)
-            return response.content.decode('utf-8')
+            json_response = requests.get(url, timeout=10)
+            html = json_response.content.decode('utf-8')
+            text = BeautifulSoup(html).get_text().strip()
+            return text
         return ''
 
     def _get_amendment_text_url(self, congress, amendment_type, amendment_num):
