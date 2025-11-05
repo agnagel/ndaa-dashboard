@@ -51,8 +51,8 @@ if __name__ == "__main__":
                     # TODO: How to handle amendments of amendments?
                     details = cdg.get_amendment_details(CONGRESS, amendment_type, amendment_num)
                     amendments[i].update(details)
-                    # TODO: Add cosponsors which are not automatically included in details? >:(
-                    # TODO: Turn this HTML into regular text (in CDG class)
+                    cosponsors = cdg.get_amendment_cosponsors(CONGRESS, amendment_type, amendment_num)
+                    amendments[i].update({'cosponsors': cosponsors})
                     text = cdg.get_amendment_text(CONGRESS, amendment_type, amendment_num)
                     amendments[i].update({'text': text})
                     break

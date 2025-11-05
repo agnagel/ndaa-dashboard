@@ -77,7 +77,12 @@ class CDG:
                 return format['url']
         return ''
 
-    def get_amendment_amendments(self, congress, amendment_type, amendment_num):
-        endpoint = f"amendment/{congress}/{amendment_type}/{amendment_num}/amendments"
+    def get_amendment_cosponsors(self, congress, amendment_type, amendment_num):
+        endpoint = f"amendment/{congress}/{amendment_type}/{amendment_num}/cosponsors"
         data = self._get(endpoint)
-        return data
+        return data['cosponsors']
+
+    # def get_amendment_amendments(self, congress, amendment_type, amendment_num):
+    #     endpoint = f"amendment/{congress}/{amendment_type}/{amendment_num}/amendments"
+    #     data = self._get(endpoint)
+    #     return data
