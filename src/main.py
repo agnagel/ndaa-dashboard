@@ -1,11 +1,9 @@
-import streamlit as st
 from cdg import *
 from configparser import ConfigParser
 import json
 import os
-
-API_URL = "https://api.congress.gov/"
-API_VERSION = "v3"
+import pandas
+import streamlit
 
 config = ConfigParser()
 config.read("../secrets.ini")
@@ -20,9 +18,7 @@ BILL_NUM = "2296"
 AMENDMENT_LIST_FILE = "amendment_list.txt"
 
 if __name__ == "__main__":
-    cdg = CDG(api_url=API_URL,
-              api_key=API_KEY,
-              api_version=API_VERSION)
+    cdg = CDG(api_key=API_KEY)
 
     # Check to see how many amendments exist for this bill
     bill_details = cdg.get_bill_details(CONGRESS, BILL_TYPE, BILL_NUM)
@@ -38,13 +34,13 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"ERROR opening amendments: {e}")
 
-    # There must be new amendments (or ones deleted?) so get the most updated list
-    # I don't assume that Congress.gov appends newest amendments to the end of the page,
-    # but I should check this at some point
+    # There must be new amendments (or ones deleted?)
     if amendment_count != old_amendment_count:
+        # TODO: put a warning on the web app saying the list needs to be updated
         amendments = cdg.get_amendments(CONGRESS, BILL_TYPE, BILL_NUM)
 
         # Get amendment text for each amendment
+        # TODO: fetch only the diff instead of the entire list - create a smaller, searchable data structure
         retries = 3
         for i, amendment in enumerate(amendments):
             print(f"Processing amendment {i+1}...")
@@ -52,8 +48,11 @@ if __name__ == "__main__":
             amendment_num = amendment['number']
             for _ in range(retries):
                 try:
+                    # TODO: How to handle amendments of amendments?
                     details = cdg.get_amendment_details(CONGRESS, amendment_type, amendment_num)
                     amendments[i].update(details)
+                    # TODO: Add cosponsors which are not automatically included in details? >:(
+                    # TODO: Turn this HTML into regular text (in CDG class)
                     text = cdg.get_amendment_text(CONGRESS, amendment_type, amendment_num)
                     amendments[i].update({'text': text})
                     break
