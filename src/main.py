@@ -9,8 +9,8 @@ from st_aggrid import AgGrid, GridOptionsBuilder, JsCode
 
 config = ConfigParser()
 config.read("../secrets.ini")
-API_KEY = config.get("cdg_api", "api_auth_key")
-API_STRING = f"api_key=[{API_KEY}]"
+# API_KEY = config.get("cdg_api", "api_auth_key")
+# API_STRING = f"api_key=[{API_KEY}]"
 
 CONGRESS = "119"
 BILL_TYPE = "s"
@@ -21,11 +21,11 @@ AMENDMENT_LIST_FILE = "amendment_list.txt"
 AMENDMENT_LIST_SHORT = "amendment_list_short.txt"
 
 if __name__ == "__main__":
-    cdg = CDG(api_key=API_KEY)
+    # cdg = CDG(api_key=API_KEY)
 
     # Check to see how many amendments exist for this bill
-    bill_details = cdg.get_bill_details(CONGRESS, BILL_TYPE, BILL_NUM)
-    amendment_count = bill_details['amendments']['count']
+    # bill_details = cdg.get_bill_details(CONGRESS, BILL_TYPE, BILL_NUM)
+    # amendment_count = bill_details['amendments']['count']
 
     # Check if we have a cached list already
     old_amendment_count = 0
@@ -38,8 +38,8 @@ if __name__ == "__main__":
             print(f"ERROR opening amendments: {e}")
 
     # There must be new amendments (or ones deleted?)
-    if amendment_count != old_amendment_count:
-        print("WARNING: There are new or removed amendments on Congress.gov.")
+    # if amendment_count != old_amendment_count:
+    #     print("WARNING: There are new or removed amendments on Congress.gov.")
 
     #     # TODO: put a warning on the web app saying the list needs to be updated
     #     amendments = cdg.get_amendments(CONGRESS, BILL_TYPE, BILL_NUM)
